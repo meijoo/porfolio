@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Logistics Finder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky: #0ea5e9;
+    --sky-light: #e0f2fe;
+    --sky-dark: #0369a1;
+    --teal: #0d9488;
+    --teal-light: #ccfbf1;
+    --coral: #f97316;
+    --coral-light: #fff7ed;
+    --ink: #0f172a;
+    --ink-2: #334155;
+    --ink-3: #64748b;
+    --ink-4: #94a3b8;
+    --surface: #f8fafc;
+    --surface-2: #f1f5f9;
+    --white: #ffffff;
+    --border: rgba(15,23,42,0.08);
+    --border-2: rgba(15,23,42,0.14);
+    --radius: 12px;
+    --radius-lg: 20px;
+  }
+
+  .app-screenshot {
+  width: 100%;
+  display: block;
+  border-radius: 26px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--white);
+    color: var(--ink);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 40px; height: 64px;
+  }
+  .nav-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px; color: var(--sky-dark);
+    letter-spacing: -0.3px;
+  }
+  .nav-links {
+    display: flex; gap: 4px; list-style: none;
+  }
+  .nav-links a {
+    text-decoration: none; color: var(--ink-3); font-size: 13px; font-weight: 500;
+    padding: 6px 12px; border-radius: 8px; transition: all 0.15s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .nav-links a:hover { background: var(--surface); color: var(--ink); }
+  .nav-num { font-size: 10px; font-weight: 600; color: var(--sky); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 100px 40px 80px;
+    background: linear-gradient(180deg, #f0f9ff 0%, #ffffff 60%);
+    position: relative; overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; pointer-events: none;
+    background-image: radial-gradient(circle at 20% 50%, rgba(14,165,233,0.07) 0%, transparent 50%),
+                      radial-gradient(circle at 80% 20%, rgba(13,148,136,0.06) 0%, transparent 50%);
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--sky-light); color: var(--sky-dark);
+    font-size: 12px; font-weight: 600; letter-spacing: 0.04em;
+    text-transform: uppercase; border-radius: 100px;
+    padding: 6px 16px; margin-bottom: 32px;
+    border: 1px solid rgba(14,165,233,0.25);
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(42px, 6vw, 76px);
+    line-height: 1.05;
+    color: var(--ink);
+    letter-spacing: -2px;
+    margin-bottom: 24px;
+    max-width: 800px;
+  }
+  .hero h1 em { font-style: italic; color: var(--sky-dark); }
+  .hero-sub {
+    font-size: 18px; color: var(--ink-3); max-width: 560px;
+    margin: 0 auto 48px; line-height: 1.7; font-weight: 400;
+  }
+  .hero-meta {
+    font-size: 13px; color: var(--ink-4);
+  }
+  .scroll-hint {
+    position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--ink-4); letter-spacing: 0.05em;
+    text-transform: uppercase;
+    animation: bounce 2s infinite;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(6px); }
+  }
+  .scroll-arrow { width: 20px; height: 20px; }
+
+  /* ── SECTIONS ── */
+  .section { padding: 100px 40px; max-width: 1100px; margin: 0 auto; }
+  .section-label {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 20px;
+  }
+  .section-num {
+    font-size: 11px; font-weight: 600; color: var(--sky);
+    background: var(--sky-light); border-radius: 100px;
+    padding: 4px 12px; letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .section-tag { font-size: 13px; color: var(--ink-4); font-weight: 500; }
+  .section h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(28px, 4vw, 44px);
+    letter-spacing: -1px; line-height: 1.15;
+    margin-bottom: 20px; color: var(--ink);
+  }
+  .section-lead {
+    font-size: 17px; color: var(--ink-3); max-width: 680px;
+    line-height: 1.75; margin-bottom: 56px;
+  }
+  hr.divider {
+    border: none; border-top: 1px solid var(--border);
+    margin: 0 40px;
+  }
+
+  /* ── PROBLEM CARDS ── */
+  .problem-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px; margin-top: 48px;
+  }
+  .problem-card {
+    background: var(--surface); border-radius: var(--radius-lg);
+    padding: 28px; border: 1px solid var(--border);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .problem-card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(15,23,42,0.08); }
+  .problem-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; margin-bottom: 16px;
+  }
+  .problem-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+  .problem-card p { font-size: 14px; color: var(--ink-3); line-height: 1.6; }
+
+  /* ── RESEARCH INTERVIEWS ── */
+  .interview-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+  }
+  .interview-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 24px;
+    transition: border-color 0.2s;
+  }
+  .interview-card:hover { border-color: var(--sky); }
+  .interview-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600; font-size: 14px; margin-bottom: 16px;
+  }
+  .interview-card .name { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+  .interview-card .trips { font-size: 13px; color: var(--ink-3); margin-bottom: 16px; }
+  .interview-card blockquote {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic; font-size: 14px; color: var(--ink-2);
+    border-left: 3px solid var(--sky-light); padding-left: 14px;
+    line-height: 1.6;
+  }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+  .tag {
+    font-size: 11px; font-weight: 600; padding: 3px 10px;
+    border-radius: 100px; text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .tag-sky { background: var(--sky-light); color: var(--sky-dark); }
+  .tag-teal { background: var(--teal-light); color: var(--teal); }
+  .tag-coral { background: var(--coral-light); color: var(--coral); }
+
+  /* ── FINDING BOXES ── */
+  .findings-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px; margin-top: 48px;
+  }
+  .finding {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 24px;
+  }
+  .finding-label { font-size: 11px; font-weight: 600; color: var(--sky); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; }
+  .finding p { font-size: 14px; color: var(--ink-2); line-height: 1.65; }
+
+  /* ── PERSONAS ── */
+  .personas-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  .persona {
+    border-radius: var(--radius-lg); padding: 32px;
+    border: 1px solid var(--border); position: relative; overflow: hidden;
+  }
+  .persona-accent {
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  }
+  .persona h3 { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+  .persona .role { font-size: 13px; color: var(--ink-3); margin-bottom: 20px; }
+  .persona-section { margin-bottom: 16px; }
+  .persona-section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-4); margin-bottom: 8px; }
+  .persona-section p { font-size: 14px; color: var(--ink-2); line-height: 1.6; }
+  .persona-list { list-style: none; }
+  .persona-list li { font-size: 14px; color: var(--ink-2); padding: 4px 0; display: flex; align-items: flex-start; gap: 8px; }
+  .persona-list li::before { content: '—'; color: var(--ink-4); flex-shrink: 0; }
+
+  /* ── USER TASKS ── */
+  .tasks-list { display: flex; flex-direction: column; gap: 24px; }
+  .task-item {
+    display: flex; gap: 24px; align-items: flex-start;
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 28px;
+    transition: box-shadow 0.2s;
+  }
+  .task-item:hover { box-shadow: 0 4px 24px rgba(15,23,42,0.07); }
+  .task-num-big {
+    font-family: 'DM Serif Display', serif;
+    font-size: 48px; color: var(--sky-light); line-height: 1;
+    flex-shrink: 0; min-width: 48px;
+  }
+  .task-body h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+  .task-body p { font-size: 14px; color: var(--ink-3); line-height: 1.65; margin-bottom: 16px; }
+  .task-features { display: flex; flex-wrap: wrap; gap: 8px; }
+  .task-feature {
+    font-size: 12px; background: var(--surface-2);
+    color: var(--ink-2); padding: 4px 12px;
+    border-radius: 100px; font-weight: 500;
+    border: 1px solid var(--border);
+  }
+
+  /* ── FEATURES TABLE ── */
+  .features-table { width: 100%; border-collapse: collapse; margin-top: 40px; }
+  .features-table th {
+    text-align: left; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-4);
+    border-bottom: 2px solid var(--border-2); padding: 12px 16px;
+  }
+  .features-table td {
+    font-size: 14px; color: var(--ink-2); padding: 16px;
+    border-bottom: 1px solid var(--border); vertical-align: top;
+  }
+  .features-table tr:last-child td { border-bottom: none; }
+  .features-table tr:hover td { background: var(--surface); }
+  .check { color: var(--teal); font-weight: 700; }
+
+  /* ── FLOWS ── */
+  .flow-container {
+    background: var(--surface); border-radius: var(--radius-lg);
+    padding: 40px; margin-top: 40px; border: 1px solid var(--border);
+  }
+  .flow-title { font-size: 14px; font-weight: 600; color: var(--ink-3); margin-bottom: 32px; text-align: center; text-transform: uppercase; letter-spacing: 0.05em; }
+  .flow-steps { display: flex; align-items: flex-start; gap: 0; flex-wrap: wrap; }
+  .flow-step { flex: 1; min-width: 120px; text-align: center; position: relative; }
+  .flow-step:not(:last-child)::after {
+    content: '→'; position: absolute; right: -12px; top: 18px;
+    color: var(--ink-4); font-size: 18px;
+  }
+  .flow-dot {
+    width: 40px; height: 40px; border-radius: 50%; margin: 0 auto 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 600;
+  }
+  .flow-step h4 { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .flow-step p { font-size: 12px; color: var(--ink-4); line-height: 1.4; }
+
+  /* ── WIREFRAME MOCKUP ── */
+  .mockup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 40px; }
+  @media (max-width: 680px) { .mockup-grid { grid-template-columns: 1fr; } }
+
+  .phone-frame {
+    background: var(--ink); border-radius: 36px;
+    padding: 12px; max-width: 300px; margin: 0 auto;
+    box-shadow: 0 20px 60px rgba(15,23,42,0.2);
+  }
+  .phone-screen {
+    background: var(--white); border-radius: 26px;
+    overflow: hidden; min-height: 520px;
+  }
+  .phone-statusbar {
+    background: var(--white); padding: 12px 20px 0;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 11px; font-weight: 600; color: var(--ink);
+  }
+  .phone-topbar {
+    padding: 12px 20px 16px; border-bottom: 1px solid var(--border);
+  }
+  .phone-topbar h4 { font-size: 16px; font-weight: 700; }
+  .phone-topbar p { font-size: 12px; color: var(--ink-3); }
+
+  /* App screens */
+  .app-screen { padding: 0 16px 20px; }
+  .app-search-bar {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 10px 14px; margin: 14px 0;
+    font-size: 13px; color: var(--ink-3);
+  }
+  .flight-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px; margin-bottom: 10px;
+  }
+  .flight-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+  .airline { font-size: 11px; color: var(--ink-3); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+  .price-tag { font-size: 16px; font-weight: 700; color: var(--ink); }
+  .price-tag span { font-size: 11px; font-weight: 400; color: var(--ink-3); }
+  .flight-route { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .city-time { text-align: center; }
+  .city-time .time { font-size: 15px; font-weight: 600; }
+  .city-time .code { font-size: 11px; color: var(--ink-4); }
+  .flight-line { flex: 1; position: relative; display: flex; align-items: center; }
+  .flight-line::before { content: ''; flex: 1; height: 1px; background: var(--border-2); }
+  .flight-line .plane { font-size: 14px; position: absolute; left: 50%; transform: translateX(-50%); background: white; padding: 0 4px; }
+  .duration { font-size: 11px; color: var(--ink-4); text-align: center; margin-top: 4px; }
+  .vote-bar { display: flex; gap: 6px; align-items: center; margin-top: 10px; }
+  .vote-btn {
+    flex: 1; padding: 7px; border-radius: 8px; border: 1.5px solid var(--border-2);
+    font-size: 12px; font-weight: 600; cursor: pointer;
+    background: var(--white); color: var(--ink-2); text-align: center;
+    transition: all 0.15s;
+  }
+  .vote-btn.voted { background: var(--sky); color: white; border-color: var(--sky); }
+  .vote-count { font-size: 11px; color: var(--ink-4); min-width: 30px; text-align: right; }
+
+  .hostel-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden; margin-bottom: 10px;
+  }
+  .hostel-img-placeholder {
+    height: 80px;
+    background: linear-gradient(135deg, #bae6fd 0%, #7dd3fc 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+  }
+  .hostel-body { padding: 12px 14px; }
+  .hostel-name { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+  .hostel-meta { font-size: 12px; color: var(--ink-3); display: flex; gap: 8px; margin-bottom: 8px; }
+  .star { color: #f59e0b; }
+
+  /* ── POLL SCREEN ── */
+  .poll-option {
+    border: 1.5px solid var(--border);
+    border-radius: 12px; padding: 14px; margin-bottom: 10px;
+    cursor: pointer; transition: all 0.15s; position: relative; overflow: hidden;
+  }
+  .poll-option.leading {
+    border-color: var(--sky);
+  }
+  .poll-fill {
+    position: absolute; left: 0; top: 0; bottom: 0;
+    background: rgba(14,165,233,0.08); transition: width 0.4s;
+    pointer-events: none;
+  }
+  .poll-option-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; position: relative; }
+  .poll-option-title { font-size: 14px; font-weight: 600; }
+  .poll-votes { font-size: 12px; color: var(--sky-dark); font-weight: 700; }
+  .poll-option-details { font-size: 12px; color: var(--ink-3); position: relative; }
+  .booking-tracker {
+    background: var(--surface); border-radius: 12px; padding: 14px; margin-top: 12px;
+  }
+  .booking-tracker-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-4); margin-bottom: 10px; }
+  .member-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; }
+  .member-row:not(:last-child) { border-bottom: 1px solid var(--border); }
+  .member-name { font-size: 13px; font-weight: 500; }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dot-green { background: #22c55e; }
+  .dot-yellow { background: #f59e0b; }
+  .dot-red { background: #ef4444; }
+  .status-text { font-size: 12px; color: var(--ink-3); display: flex; align-items: center; gap: 6px; }
+
+  /* ── ECOSYSTEM ── */
+  .ecosystem-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px; margin-top: 48px;
+  }
+  .eco-card {
+    border-radius: var(--radius-lg); padding: 24px;
+    border: 1px solid var(--border);
+  }
+  .eco-card.center-card {
+    background: linear-gradient(135deg, var(--sky-light) 0%, #e0f2fe 100%);
+    border-color: rgba(14,165,233,0.3);
+  }
+  .eco-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+  .eco-label.feeds-in { color: var(--teal); }
+  .eco-label.feeds-out { color: var(--coral); }
+  .eco-label.center { color: var(--sky-dark); }
+  .eco-label.bidirectional { color: var(--ink-3); }
+  .eco-card h4 { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+  .eco-card p { font-size: 13px; color: var(--ink-3); line-height: 1.55; }
+
+  /* ── REFLECTION ── */
+  .reflection-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 20px; margin-top: 40px;
+  }
+  @media (max-width: 600px) { .reflection-grid { grid-template-columns: 1fr; } }
+  .reflection-block {
+    background: var(--surface); border-radius: var(--radius); padding: 28px;
+    border: 1px solid var(--border);
+  }
+  .reflection-block h3 { font-size: 16px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+  .reflection-block p { font-size: 14px; color: var(--ink-3); line-height: 1.65; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink); color: rgba(255,255,255,0.5);
+    text-align: center; padding: 40px;
+    font-size: 13px;
+  }
+  footer strong { color: white; }
+
+  /* ── PROTO SECTION ── */
+  .proto-embed {
+    background: var(--surface); border-radius: var(--radius-lg);
+    border: 1px solid var(--border); padding: 40px;
+    text-align: center; margin-top: 40px;
+  }
+  .proto-embed p { color: var(--ink-3); font-size: 15px; margin-bottom: 24px; }
+  .proto-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--sky); color: white;
+    padding: 14px 28px; border-radius: 100px;
+    font-size: 15px; font-weight: 600; text-decoration: none;
+    transition: background 0.15s;
+  }
+  .proto-btn:hover { background: var(--sky-dark); }
+
+  /* ── ANIMATIONS ── */
+  .fade-in {
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 768px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    .section { padding: 64px 20px; }
+    #hero { padding: 100px 20px 60px; }
+    .mockup-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Smart Logistics</div>
+  <ul class="nav-links">
+    <li><a href="#problem"><span class="nav-num">01</span> Problem</a></li>
+    <li><a href="#research"><span class="nav-num">02</span> Research</a></li>
+    <li><a href="#personas"><span class="nav-num">03</span> Personas</a></li>
+    <li><a href="#tasks"><span class="nav-num">04</span> Tasks</a></li>
+    <li><a href="#features"><span class="nav-num">05</span> Features</a></li>
+    <li><a href="#screens"><span class="nav-num">06</span> Screens</a></li>
+    <li><a href="#ecosystem"><span class="nav-num">07</span> Ecosystem</a></li>
+    <li><a href="#reflection"><span class="nav-num">08</span> Reflection</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero" style="position:relative; z-index:1;">
+    <div class="hero-badge">✈ Feature 2 — Smart Logistics Finder</div>
+    <h1>Find flights & stays.<br><em>Vote as a group.</em></h1>
+    <p class="hero-sub">Eliminating the chaos of coordinating student group travel — from the first search to a confirmed booking everyone agreed on.</p>
+    <p class="hero-meta">CS3240 Integrated Design Project</p>
+  </div>
+  <div class="scroll-hint">
+    <svg class="scroll-arrow" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 4v12M4 10l6 6 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Scroll
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- PROBLEM -->
+<section id="problem" class="section">
+  <div class="section-label">
+    <span class="section-num">01</span>
+    <span class="section-tag">Problem Framing</span>
+  </div>
+  <h2>Planning group travel is a fragmented mess</h2>
+  <p class="section-lead">Exchange students searching for flights and hostels bounce between apps, share links in group chats that get buried, and struggle to reach consensus — all while the cheapest options disappear.</p>
+
+  <div class="problem-grid fade-in">
+    <div class="problem-card">
+      <div class="problem-icon" style="background:#e0f2fe">🔀</div>
+      <h3>Tools scattered everywhere</h3>
+      <p>Google Flights, Agoda, Airbnb, Klook, WhatsApp — options shared in group chats get buried and lost within hours.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-icon" style="background:#ccfbf1">👤</div>
+      <h3>Planning falls on one person</h3>
+      <p>Gathering input from everyone is like "pulling teeth." One person ends up doing all the research while others stay passive.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-icon" style="background:#fff7ed">⏰</div>
+      <h3>Booking too late</h3>
+      <p>Not thinking ahead means things become expensive or unavailable. Prices spike while the group debates for days.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-icon" style="background:#fef3c7">❌</div>
+      <h3>No booking confirmation</h3>
+      <p>People say they've booked but haven't. The group only finds out at the airport — forcing last-minute changes and higher costs.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-icon" style="background:#f3e8ff">🗳️</div>
+      <h3>No structured way to vote</h3>
+      <p>Decisions happen via informal polls or whoever speaks loudest in the chat. Minority preferences often get ignored.</p>
+    </div>
+    <div class="problem-card">
+      <div class="problem-icon" style="background:#fce7f3">💸</div>
+      <h3>Budget misalignment</h3>
+      <p>Without filtering by student budgets, groups compare premium options with budget ones, causing disagreements and resentment.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- RESEARCH -->
+<section id="research" class="section">
+  <div class="section-label">
+    <span class="section-num">02</span>
+    <span class="section-tag">User Research</span>
+  </div>
+  <h2>Four students, four planning styles</h2>
+  <p class="section-lead">Semi-structured interviews with NUS Spring 2026 exchange students who had recently returned from group trips revealed consistent patterns in how logistics decisions were made — and where they broke down.</p>
+
+  <div class="interview-grid fade-in">
+    <div class="interview-card">
+      <div class="interview-avatar" style="background:#e0f2fe; color:#0369a1">U1</div>
+      <div class="name">U01</div>
+      <div class="trips">Malaysia (5 ppl) · Japan (3 ppl)</div>
+      <blockquote>"Larger groups make it hard to find activities everyone wants to do."</blockquote>
+      <div class="tags">
+        <span class="tag tag-sky">WhatsApp</span>
+        <span class="tag tag-teal">Google Docs</span>
+        <span class="tag tag-coral">2 weeks ahead</span>
+      </div>
+    </div>
+    <div class="interview-card">
+      <div class="interview-avatar" style="background:#ccfbf1; color:#0f6e56">U2</div>
+      <div class="name">U02</div>
+      <div class="trips">Malaysia · Thailand · Korea</div>
+      <blockquote>"Planning usually ends up falling on one person to organise everything."</blockquote>
+      <div class="tags">
+        <span class="tag tag-sky">Google Flights</span>
+        <span class="tag tag-teal">Airbnb</span>
+        <span class="tag tag-coral">1 month ahead</span>
+      </div>
+    </div>
+    <div class="interview-card">
+      <div class="interview-avatar" style="background:#fff7ed; color:#c2410c">U3</div>
+      <div class="name">U03</div>
+      <div class="trips">Malaysia · Vietnam · Philippines</div>
+      <blockquote>"Not thinking to book early means things become expensive or unavailable."</blockquote>
+      <div class="tags">
+        <span class="tag tag-sky">iMessages</span>
+        <span class="tag tag-teal">Agoda</span>
+        <span class="tag tag-coral">1+ month ahead</span>
+      </div>
+    </div>
+    <div class="interview-card">
+      <div class="interview-avatar" style="background:#f3e8ff; color:#7e22ce">U4</div>
+      <div class="name">U04</div>
+      <div class="trips">Vietnam · Cambodia · Indonesia</div>
+      <blockquote>"People say they've booked but haven't — then everyone has to pay more or change plans."</blockquote>
+      <div class="tags">
+        <span class="tag tag-sky">TripAdvisor</span>
+        <span class="tag tag-teal">Hostelworld</span>
+        <span class="tag tag-coral">In person</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="findings-grid fade-in">
+    <div class="finding">
+      <div class="finding-label">Finding 01</div>
+      <p>All four users used <strong>multiple apps</strong> (2–6 each) just to find flights and accommodation. None had a single source of truth shared with the group.</p>
+    </div>
+    <div class="finding">
+      <div class="finding-label">Finding 02</div>
+      <p>Options were shared via <strong>chat messages and Instagram DMs</strong> — making it easy for links to get buried and impossible to compare simultaneously.</p>
+    </div>
+    <div class="finding">
+      <div class="finding-label">Finding 03</div>
+      <p>Decision-making defaulted to <strong>loudest voice or the planner's preference</strong>. Only U02 used a shared Google Doc to structure comparisons.</p>
+    </div>
+    <div class="finding">
+      <div class="finding-label">Finding 04</div>
+      <p>All users reported <strong>no way to confirm</strong> who had actually booked vs. who said they would. Booking confusion caused real trip disruptions.</p>
+    </div>
+    <div class="finding">
+      <div class="finding-label">Finding 05</div>
+      <p><strong>Early booking awareness</strong> was desired but not acted on. U03 specifically called out missing urgency signals like price alerts or availability warnings.</p>
+    </div>
+    <div class="finding">
+      <div class="finding-label">Finding 06</div>
+      <p>All four users wanted a <strong>centralized, categorized space</strong> to view and vote on options — distinct from a group chat, which they felt was cluttered and chaotic.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- PERSONAS -->
+<section id="personas" class="section">
+  <div class="section-label">
+    <span class="section-num">03</span>
+    <span class="section-tag">User Personas</span>
+  </div>
+  <h2>Three archetypes, one broken system</h2>
+  <p class="section-lead">From the interview data, three distinct logistics personas emerged — each with a different relationship to planning, and each failing in a distinct way when group travel is involved.</p>
+
+  <div class="personas-grid fade-in">
+    <div class="persona" style="background:#f0f9ff">
+      <div class="persona-accent" style="background:var(--sky)"></div>
+      <h3>The Overwhelmed Planner</h3>
+      <p class="role">Ends up organising everything for the group</p>
+      <div class="persona-section">
+        <div class="persona-section-label">Profile</div>
+        <p class="persona-section p">Juggles Google Docs, multiple flight and hotel apps, and the group chat simultaneously. Frustrated when others don't respond to options they've spent hours finding.</p>
+      </div>
+      <div class="persona-section">
+        <div class="persona-section-label">Pain Points</div>
+        <ul class="persona-list">
+          <li>Uneven research workload</li>
+          <li>Chasing people for votes or input</li>
+          <li>No confirmation of who's actually booked</li>
+        </ul>
+      </div>
+      <div class="persona-section">
+        <div class="persona-section-label">Needs</div>
+        <ul class="persona-list">
+          <li>Voting system + reminders</li>
+          <li>Centralized option dashboard</li>
+          <li>Booking status tracker</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="persona" style="background:#f0fdf4">
+      <div class="persona-accent" style="background:var(--teal)"></div>
+      <h3>The Passive Participant</h3>
+      <p class="role">Joins trips but doesn't actively plan</p>
+      <div class="persona-section">
+        <div class="persona-section-label">Profile</div>
+        <p class="persona-section p">Happy to go wherever, but overwhelmed by scattered links across apps. Relies entirely on whoever is organising, contributing only when directly asked.</p>
+      </div>
+      <div class="persona-section">
+        <div class="persona-section-label">Pain Points</div>
+        <ul class="persona-list">
+          <li>Options scattered across apps and chat</li>
+          <li>Doesn't know how to quickly give input</li>
+          <li>Feels excluded from decisions</li>
+        </ul>
+      </div>
+      <div class="persona-section">
+        <div class="persona-section-label">Needs</div>
+        <ul class="persona-list">
+          <li>Simple one-tap voting interface</li>
+          <li>Clear, pre-organised options</li>
+          <li>Push notifications to vote</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="persona" style="background:#fffbeb">
+      <div class="persona-accent" style="background:var(--coral)"></div>
+      <h3>The Last-Minute Booker</h3>
+      <p class="role">Says they'll book, then delays</p>
+      <div class="persona-section">
+        <div class="persona-section-label">Profile</div>
+        <p class="persona-section p">Agrees to everything in the group chat but actually books at the last minute — or not at all. Causes the whole group to either wait or rebook at higher prices.</p>
+      </div>
+      <div class="persona-section">
+        <div class="persona-section-label">Pain Points</div>
+        <ul class="persona-list">
+          <li>Forgets or procrastinates</li>
+          <li>No urgency signals or reminders</li>
+          <li>Doesn't realise the impact on others</li>
+        </ul>
+      </div>
+      <div class="persona-section">
+        <div class="persona-section-label">Needs</div>
+        <ul class="persona-list">
+          <li>Booking status tracker visible to all</li>
+          <li>Deadline and price-change reminders</li>
+          <li>Easy one-tap booking from voted option</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- TASKS -->
+<section id="tasks" class="section">
+  <div class="section-label">
+    <span class="section-num">04</span>
+    <span class="section-tag">Key User Tasks</span>
+  </div>
+  <h2>Three tasks, one end-to-end flow</h2>
+  <p class="section-lead">Consolidated from interview findings, each task represents a complete user goal — not an isolated feature. Every screen in Smart Logistics serves one of these three jobs.</p>
+
+  <div class="tasks-list fade-in">
+    <div class="task-item">
+      <div class="task-num-big">01</div>
+      <div class="task-body">
+        <h3>Search and filter student-friendly options</h3>
+        <p>Find flights and hostels filtered by the group's budget, travel dates, and group size — aggregated from multiple sources in one interface, without opening five different apps.</p>
+        <div class="task-features">
+          <span class="task-feature">Budget filter</span>
+          <span class="task-feature">Group size filter</span>
+          <span class="task-feature">Multi-source aggregation</span>
+          <span class="task-feature">Date range picker</span>
+          <span class="task-feature">Availability alerts</span>
+        </div>
+      </div>
+    </div>
+    <div class="task-item">
+      <div class="task-num-big">02</div>
+      <div class="task-body">
+        <h3>Add options to a poll and vote as a group</h3>
+        <p>Any group member can nominate a flight or hostel for the shared poll. Everyone votes on their preferred options — and the result is transparent to all, replacing buried group chat polls.</p>
+        <div class="task-features">
+          <span class="task-feature">Add to poll from results</span>
+          <span class="task-feature">Group voting interface</span>
+          <span class="task-feature">Vote tally visible to all</span>
+          <span class="task-feature">Vote reminders</span>
+          <span class="task-feature">Categorised by type</span>
+        </div>
+      </div>
+    </div>
+    <div class="task-item">
+      <div class="task-num-big">03</div>
+      <div class="task-body">
+        <h3>Track who has booked and who hasn't</h3>
+        <p>After a vote resolves, each member marks themselves as booked. The whole group can see the booking status dashboard — eliminating the "I thought you booked" problem before the trip.</p>
+        <div class="task-features">
+          <span class="task-feature">Per-member booking status</span>
+          <span class="task-feature">Deadline reminders</span>
+          <span class="task-feature">Check-off system</span>
+          <span class="task-feature">Late booker nudge</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- FEATURES -->
+<section id="features" class="section">
+  <div class="section-label">
+    <span class="section-num">05</span>
+    <span class="section-tag">Feature Specification</span>
+  </div>
+  <h2>What Smart Logistics does</h2>
+  <p class="section-lead">The feature set maps directly to pain points surfaced in interviews. Each feature has a clear evidence base in user data.</p>
+
+  <table class="features-table fade-in">
+    <thead>
+      <tr>
+        <th>Feature</th>
+        <th>Description</th>
+        <th>User evidence</th>
+      </tr>
+    </thead>
+    <tbody>
+  <tr>
+    <td><strong>Flight Search</strong></td>
+    <td>Browse and compare flight options for group trips with pricing, times, and airline details in one centralized interface.</td>
+    <td>Users needed one place to compare flights without switching between multiple apps.</td>
+  </tr>
+  <tr>
+    <td><strong>Rental Search</strong></td>
+    <td>Search hotels and rentals with pricing, ratings, and amenities so groups can evaluate accommodations together.</td>
+    <td>Interviewees used multiple accommodation apps and wanted consolidated stay comparisons.</td>
+  </tr>
+  <tr>
+    <td><strong>Polls</strong></td>
+    <td>Create group polls for flights and rentals so members can vote transparently on preferred options before booking.</td>
+    <td>Users struggled to make decisions in chaotic group chats and wanted structured voting.</td>
+  </tr>
+</tbody>
+  </table>
+</section>
+
+<hr class="divider">
+
+<!-- SCREENS -->
+<section id="screens" class="section">
+  <div class="section-label">
+    <span class="section-num">06</span>
+    <span class="section-tag">UI Screens</span>
+  </div>
+  <h2>Three screens, one coordinated flow</h2>
+  <p class="section-lead">The interface walks the group through search → vote → confirm. Each screen corresponds to one of the three key user tasks.</p>
+
+  <!-- User flow diagram -->
+  <div class="flow-container fade-in">
+    <div class="flow-title">Group logistics flow</div>
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="flow-dot" style="background:#e0f2fe; color:#0369a1">🔍</div>
+        <h4>Search</h4>
+        <p>Filter by budget, dates, group size</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-dot" style="background:#ccfbf1; color:#0f6e56">➕</div>
+        <h4>Nominate</h4>
+        <p>Add option to group poll</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-dot" style="background:#fef3c7; color:#b45309">🗳️</div>
+        <h4>Vote</h4>
+        <p>Group votes, tally updates live</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-dot" style="background:#f3e8ff; color:#7e22ce">✓</div>
+        <h4>Decide</h4>
+        <p>Winning option confirmed</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-dot" style="background:#dcfce7; color:#15803d">📋</div>
+        <h4>Track</h4>
+        <p>Monitor who has booked</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup-grid fade-in" style="margin-top: 48px;">
+
+    <!-- Screen 1: Flight Search -->
+    <div>
+      <p style="font-size: 13px; font-weight: 600; color: var(--ink-3); text-align: center; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.05em;">Screen 1 — Flight Search</p>
+      <div class="phone-frame">
+        <img src="flights.png" alt="Flight Search Screen" class="app-screenshot">
+      </div>
+    </div>
+
+    <!-- Screen 2: Poll -->
+    <div>
+      <p style="font-size: 13px; font-weight: 600; color: var(--ink-3); text-align: center; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.05em;">Screen 2 — Group Poll</p>
+      <div class="phone-frame">
+        <img src="polls.png" alt="Polls Screens" class="app-screenshot">
+      </div>
+    </div>
+
+    <!-- Screen 3 :Rental search screen -->
+    <div>
+      <p style="font-size: 13px; font-weight: 600; color: var(--ink-3); text-align: center; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.05em;">Screen 4 — Hostel Search</p>
+      <div class="phone-frame">
+        <img src="rentals.png" alt="Rentals Search Screen" class="app-screenshot">
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ECOSYSTEM -->
+<section id="ecosystem" class="section">
+  <div class="section-label">
+    <span class="section-num">07</span>
+    <span class="section-tag">Service Ecosystem</span>
+  </div>
+  <h2>Smart Logistics within the super-app</h2>
+  <p class="section-lead">The Smart Logistics Finder doesn't work in isolation. It feeds into and receives data from four other services in the Exchango super-app ecosystem.</p>
+
+  <div class="ecosystem-grid fade-in">
+
+    <div class="eco-card">
+      <div class="eco-label feeds-in">↓ Feeds in</div>
+      <h4>Exchange Profile & Settings</h4>
+      <p>Supplies each user's budget range, travel dates, and student status — used to filter and personalise search results before they're shown to the group.</p>
+    </div>
+
+    <div class="eco-card">
+      <div class="eco-label feeds-in">↓ Feeds in</div>
+      <h4>Social Hub & Trip Matcher</h4>
+      <p>Matched travel companions are added to the same voting session. Group size affects hostel capacity filters and group fare eligibility.</p>
+    </div>
+
+    <div class="eco-card center-card">
+      <div class="eco-label center">◎ This service</div>
+      <h4>Smart Logistics Finder</h4>
+      <p>Aggregates flights and stays, hosts the group voting polls, tracks booking confirmations, and sends deadline reminders.</p>
+    </div>
+
+    <div class="eco-card">
+      <div class="eco-label feeds-out">↑ Feeds out</div>
+      <h4>Collaborative Itinerary Mapper</h4>
+      <p>Voted and confirmed flights and hostels automatically populate the shared trip timeline as itinerary items.</p>
+    </div>
+
+    <div class="eco-card">
+      <div class="eco-label feeds-out">↑ Feeds out</div>
+      <h4>Financial Manager</h4>
+      <p>Confirmed per-person flight and hostel costs trigger payment requests and become the cost baseline for group splitting.</p>
+    </div>
+
+    <div class="eco-card">
+      <div class="eco-label feeds-out">↑ Feeds out</div>
+      <h4>Safety & Logistics Vault</h4>
+      <p>After booking, flight confirmation numbers, hostel addresses, and check-in details are stored and accessible to the whole group.</p>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- REFLECTION -->
+<section id="reflection" class="section">
+  <div class="section-label">
+    <span class="section-num">08</span>
+    <span class="section-tag">Reflection</span>
+  </div>
+  <h2>What I learned</h2>
+  <p class="section-lead">Building the Smart Logistics Finder surfaced some important tensions between convenience, group dynamics, and technical scope.</p>
+
+  <div class="reflection-grid fade-in">
+    <div class="reflection-block">
+      <h3>Voting ≠ deciding</h3>
+      <p>A key insight from U04 was that they didn't want "just another group chat with a poll." The design challenge wasn't the vote mechanic — it was making the result feel legitimate and binding. Visible, real-time vote counts address this.</p>
+    </div>
+    <div class="reflection-block">
+      <h3>⚡ Urgency needs to be designed</h3>
+      <p>U03 explicitly named booking too late as the core frustration. Price-change alerts and "only 2 beds left" signals are not nice-to-haves — they're the mechanism that shifts user behaviour from passive to action-oriented.</p>
+    </div>
+    <div class="reflection-block">
+      <h3>🔗 Aggregation is a hard technical problem</h3>
+      <p>Pulling live data from Google Flights, Airbnb, Agoda, and Hostelworld requires either scraping (legally fragile) or official API partnerships. The service design assumes these exist, but MVP scope would likely start with manual link sharing + structured voting.</p>
+    </div>
+    <div class="reflection-block">
+      <h3>👥 Status visibility changes behaviour</h3>
+      <p>Simply making the booking tracker visible to the whole group — not just the planner — creates social accountability. U04's pain point (people who claim to have booked but haven't) is addressed by removing informational asymmetry, not by adding reminders.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p style="margin-bottom:8px">Smart Logistics Finder</p>
+  <p>CS3240 Integrated Design Project · Feature 2</p>
+</footer>
+
+<script>
+  // Fade-in on scroll
+  const faders = document.querySelectorAll('.fade-in');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  faders.forEach(el => observer.observe(el));
+
+  // Interactive vote buttons
+  document.querySelectorAll('.vote-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      if (this.textContent.includes('Vote')) {
+        const card = this.closest('.flight-card');
+        const all = card.querySelectorAll('.vote-btn');
+        all.forEach(b => { if (b.textContent.includes('Vote')) b.classList.remove('voted'); });
+        this.classList.add('voted');
+      }
+    });
+  });
+
+  // Interactive poll options
+  document.querySelectorAll('.poll-option').forEach(opt => {
+    opt.addEventListener('click', function() {
+      const section = this.closest('.app-screen');
+      section.querySelectorAll('.poll-option').forEach(o => o.classList.remove('leading'));
+      this.classList.add('leading');
+    });
+  });
+</script>
+</body>
+</html>
